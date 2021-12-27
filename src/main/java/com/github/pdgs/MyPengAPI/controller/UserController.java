@@ -1,5 +1,6 @@
 package com.github.pdgs.MyPengAPI.controller;
 
+import com.github.pdgs.MyPengAPI.advice.exception.CUserNotFoundException;
 import com.github.pdgs.MyPengAPI.domain.posts.User;
 import com.github.pdgs.MyPengAPI.repository.UserJpaRepo;
 import com.github.pdgs.MyPengAPI.response.CommonResult;
@@ -36,7 +37,7 @@ public class UserController {
     @Operation(summary = "회원 단건 조회", description = "userId로 회원 조회")
     @GetMapping(value = "/user/{autoID}")
     public SingleResult<User> findUserByAutoId(@PathVariable Long autoID) {
-        return responseService.getSingleResult(userJpaRepo.findById(autoID).orElse(null));
+        return responseService.getSingleResult(userJpaRepo.findById(autoID).orElseThrow(CUserNotFoundException::new));
     }
 
     @Operation(summary = "회원 입력", description = "회원을 입력한다.")
