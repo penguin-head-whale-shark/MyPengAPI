@@ -8,15 +8,16 @@ import com.github.pdgs.MyPengAPI.response.CommonResult;
 import com.github.pdgs.MyPengAPI.response.SingleResult;
 import com.github.pdgs.MyPengAPI.service.posts.ResponseService;
 import com.github.pdgs.MyPengAPI.service.posts.SchoolService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
-@Tag(name = "1. Sign")
+@Api(tags = {"1. Sign"})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "api/v1")
@@ -28,9 +29,10 @@ public class SignController {
     private final PasswordEncoder passwordEncoder;
     private final SchoolService schoolService;
 
-    @Operation(summary = "로그인", description = "이메일 회원 로그인")
+    @ApiOperation(value = "로그인", notes = "이메일 회원 로그인을 한다.")
     @PostMapping(value = "user/sign-in")
-    public SingleResult<String> signIn(@RequestParam String id, @RequestParam String password) {
+    public SingleResult<String> signIn(@ApiParam(value = "회원ID: 이메일", required = true) @RequestParam String id,
+                                       @ApiParam(value = "비밀번호", required = true) @RequestParam String password) {
         User user = userJpaRepo.findById(id).orElseThrow(CEmailSignInFailedException::new);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -40,36 +42,25 @@ public class SignController {
     }
 
 
-    @Operation(summary = "가입", description = "회원가입")
+    @ApiOperation(value = "가입", notes = "회원가입을 한다.")
     @PostMapping(value = "user/sign-up")
-    public CommonResult signUp(@RequestParam String id,
-                               @RequestParam String password,
-                               @RequestParam String name,
-                               @RequestParam boolean isTeacher,
-                               @RequestParam String school) {
+    public CommonResult signUp(@ApiParam(value = "회원ID: 이메일", required = true) @RequestParam String id,
+                               @ApiParam(value = "비밀번호", required = true) @RequestParam String password,
+                               @ApiParam(value = "이름", required = true) @RequestParam String name,
+                               @ApiParam(value = "계정의 선생님 여부: true / false", required = true) @RequestParam boolean isTeacher,
+                               @ApiParam(value = "학교", required = true) @RequestParam String school) {
 
         String result = schoolService.checkSchool(school);
 
-        User user = User.builder()
+        userJpaRepo.save(User.builder()
                 .name(name)
                 .id(id)
                 .password(password)
                 .isTeacher(isTeacher)
                 .school(result)
                 .roles(Collections.singletonList("ROLE_USER"))
-                .build();
+                .build());
         return responseService.getSuccessResult();
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

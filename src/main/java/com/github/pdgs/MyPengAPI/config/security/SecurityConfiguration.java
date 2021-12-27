@@ -1,5 +1,6 @@
 package com.github.pdgs.MyPengAPI.config.security;
 
+import com.github.pdgs.MyPengAPI.advice.exception.CAuthenticationEntryPointException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,9 +30,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // rest api이므로 crsf 보안 필요 없음 disable
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT token으로 생성하므로 세션이 필요없음 (생성 안함)
                 .and()// 다음 리퀘스트에 대한 사용권한 체크
-                .authorizeRequests() // 가입 및 인증 주소는 누구나 접근 가능
-                .antMatchers(HttpMethod.GET, "/MyPengAPI/**").permitAll() // MyPeng 로 시작하는 GET 요청 리소스는 누구나 접근 가능
-                .anyRequest().hasRole("USER") // 그외 나머지 요청은 모두 인증된 회원만 가능
+//                .authorizeRequests() // 가입 및 인증 주소는 누구나 접근 가능
+//                .antMatchers("/*/sign-in", "/*/sign-up").permitAll()
+//                .antMatchers(HttpMethod.GET, "/MyPengAPI/**").permitAll() // MyPeng 로 시작하는 GET 요청 리소스는 누구나 접근 가능
+//                .anyRequest().hasRole("USER") // 그외 나머지 요청은 모두 인증된 회원만 가능
+//                .and()
+                .exceptionHandling().accessDeniedHandler(new CAccessDeniedHandler())
+                .and()
+                .exceptionHandling().authenticationEntryPoint(new CAuthenticationEntryPoint())
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class);

@@ -1,4 +1,4 @@
-package com.github.pdgs.MyPengAPI.config.security;
+package com.github.pdgs.MyPengAPI.service.security;
 
 import com.github.pdgs.MyPengAPI.advice.exception.CUserNotFoundException;
 import com.github.pdgs.MyPengAPI.repository.UserJpaRepo;

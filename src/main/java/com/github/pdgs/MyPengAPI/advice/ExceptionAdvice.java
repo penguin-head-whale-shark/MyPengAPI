@@ -1,5 +1,6 @@
 package com.github.pdgs.MyPengAPI.advice;
 
+import com.github.pdgs.MyPengAPI.advice.exception.CAuthenticationEntryPointException;
 import com.github.pdgs.MyPengAPI.advice.exception.CEmailSignInFailedException;
 import com.github.pdgs.MyPengAPI.advice.exception.CUserNotFoundException;
 import com.github.pdgs.MyPengAPI.response.CommonResult;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -37,6 +39,16 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailSignInFailed(HttpServletRequest request, CEmailSignInFailedException e) {
         return responseService.getFailResult(Integer.parseInt(getMessage("emailSignInFailed.code")), getMessage("emailSignInFailed.msg"));
+    }
+
+    @ExceptionHandler(CAuthenticationEntryPointException.class)
+    public CommonResult authenticationEntryPointException(HttpServletRequest request, CAuthenticationEntryPointException e) {
+        return responseService.getFailResult(Integer.parseInt(getMessage("entryPointException.code")), getMessage("entryPointException.msg"));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public CommonResult AccessDeniedException(HttpServletRequest request, AccessDeniedException e) {
+        return responseService.getFailResult((Integer.parseInt(getMessage("accessDenied.code"))), getMessage("accessDenied.msg"));
     }
 
     // code 정보에 해당하는 메시지를 조회한다.
