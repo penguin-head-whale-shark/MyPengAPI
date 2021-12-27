@@ -31,6 +31,12 @@ public class ResponseService {
         return result;
     }
 
+    public <T> SingleResult<T> getFailSingleResult(String msg) {
+        SingleResult<T> result = new SingleResult<>();
+        setFailResult(result, msg);
+        return result;
+    }
+
     public <T> ListResult<T> getListResult(List<T> list) {
         ListResult<T> result = new ListResult<>();
         result.setList(list);
@@ -50,6 +56,12 @@ public class ResponseService {
         result.setCode(CommonResponse.FAIL.getCode());
         result.setMsg(CommonResponse.FAIL.getMsg());
         return result;
+    }
+
+    private void setFailResult(CommonResult result, String msg) {
+        result.setSuccess(false);
+        result.setCode(CommonResponse.FAIL.getCode());
+        result.setMsg(msg);
     }
 
     private void setSuccessResult(CommonResult result) {

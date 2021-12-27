@@ -6,9 +6,13 @@ import com.github.pdgs.MyPengAPI.response.CommonResult;
 import com.github.pdgs.MyPengAPI.response.ListResult;
 import com.github.pdgs.MyPengAPI.response.SingleResult;
 import com.github.pdgs.MyPengAPI.service.posts.ResponseService;
+import com.github.pdgs.MyPengAPI.service.posts.SchoolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +25,7 @@ public class UserController {
 
     private final UserJpaRepo userJpaRepo;
     private final ResponseService responseService;
+    private final SchoolService schoolService;
 
     @Operation(summary = "회원 조회", description = "모든 회원을 조회합니다.")
     @GetMapping(value = "/users")
@@ -41,12 +46,36 @@ public class UserController {
                                    @RequestParam @Valid String password,
                                    @RequestParam @Valid boolean isTeacher,
                                    @RequestParam @Valid String school) {
+
+        String schoolSearch = schoolService.findByName(school);
+        if (schoolSearch == null) {
+            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+        }
+
+        boolean hasSchool = schoolSearch.contains(school);
+
+        if (!hasSchool) {
+            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+        }
+
+        JSONArray jsonArray;
+        try {
+            JSONObject jsonObject = new JSONObject(schoolSearch);
+            jsonArray = (JSONArray) jsonObject.get("schools");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+        }
+
+        String result = jsonArray.getJSONObject(0).get("name").toString();
+        System.out.println("결과: " + result);
+
         User user = User.builder()
                 .name(name)
                 .id(id)
                 .password(password)
                 .isTeacher(isTeacher)
-                .school(school)
+                .school(result)
                 .build();
         return responseService.getSingleResult(userJpaRepo.save(user));
     }

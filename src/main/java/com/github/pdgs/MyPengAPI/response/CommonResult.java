@@ -1,6 +1,5 @@
 package com.github.pdgs.MyPengAPI.response;
 
-import io.swagger.v3.oas.annotations.Operation;
 import lombok.Getter;
 import lombok.Setter;
 
