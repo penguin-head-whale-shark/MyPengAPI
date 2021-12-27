@@ -47,28 +47,7 @@ public class UserController {
                                    @RequestParam @Valid boolean isTeacher,
                                    @RequestParam @Valid String school) {
 
-        String schoolSearch = schoolService.findByName(school);
-        if (schoolSearch == null) {
-            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-        }
-
-        boolean hasSchool = schoolSearch.contains(school);
-
-        if (!hasSchool) {
-            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-        }
-
-        JSONArray jsonArray;
-        try {
-            JSONObject jsonObject = new JSONObject(schoolSearch);
-            jsonArray = (JSONArray) jsonObject.get("schools");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-        }
-
-        String result = jsonArray.getJSONObject(0).get("name").toString();
-        System.out.println("결과: " + result);
+        String result = checkSchool(school);
 
         User user = User.builder()
                 .name(name)
@@ -88,13 +67,16 @@ public class UserController {
                                      @RequestParam String password,
                                      @RequestParam boolean isTeacher,
                                      @RequestParam String school) {
+
+        String result = checkSchool(school);
+
         User user = User.builder()
                 .autoID(autoID)
                 .name(name)
                 .id(id)
                 .password(password)
                 .isTeacher(isTeacher)
-                .school(school)
+                .school(result)
                 .build();
         return responseService.getSingleResult(userJpaRepo.save(user));
     }
@@ -104,6 +86,33 @@ public class UserController {
     public CommonResult delete(@PathVariable long autoID) {
         userJpaRepo.deleteById(autoID);
         return responseService.getSuccessResult();
+    }
+
+    private String checkSchool(String school) {
+        String schoolSearch = schoolService.findByName(school);
+        if (schoolSearch == null) {
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        boolean hasSchool = schoolSearch.contains(school);
+
+        if (!hasSchool) {
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        JSONArray jsonArray;
+        try {
+            JSONObject jsonObject = new JSONObject(schoolSearch);
+            jsonArray = (JSONArray) jsonObject.get("schools");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        return jsonArray.getJSONObject(0).get("name").toString();
     }
 
 }
