@@ -19,6 +19,8 @@ import java.util.List;
 @Service
 public class SchoolService {
 
+    private final ResponseService responseService;
+
     @Transactional
     public String findByName(String name) {
         List<HttpMessageConverter<?>> converters = new ArrayList<>();
@@ -39,6 +41,33 @@ public class SchoolService {
         }
         System.out.println(result);
         return result;
+    }
+
+    public String checkSchool(String school) {
+        String schoolSearch = this.findByName(school);
+        if (schoolSearch == null) {
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        boolean hasSchool = schoolSearch.contains(school);
+
+        if (!hasSchool) {
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        JSONArray jsonArray;
+        try {
+            JSONObject jsonObject = new JSONObject(schoolSearch);
+            jsonArray = (JSONArray) jsonObject.get("schools");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
+            return null;
+        }
+
+        return jsonArray.getJSONObject(0).get("name").toString();
     }
 
 }

@@ -11,9 +11,6 @@ import com.github.pdgs.MyPengAPI.service.posts.SchoolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,7 +33,8 @@ public class UserController {
 
     @Operation(summary = "회원 단건 조회", description = "userId로 회원 조회")
     @GetMapping(value = "/user/{autoID}")
-    public SingleResult<User> findUserByAutoId(@PathVariable Long autoID) {
+    public SingleResult<User> findUserByAutoId(@PathVariable Long autoID,
+                                               @RequestParam String lang) {
         return responseService.getSingleResult(userJpaRepo.findById(autoID).orElseThrow(CUserNotFoundException::new));
     }
 
@@ -48,7 +46,7 @@ public class UserController {
                                    @RequestParam @Valid boolean isTeacher,
                                    @RequestParam @Valid String school) {
 
-        String result = checkSchool(school);
+        String result = schoolService.checkSchool(school);
 
         User user = User.builder()
                 .name(name)
@@ -69,7 +67,7 @@ public class UserController {
                                      @RequestParam boolean isTeacher,
                                      @RequestParam String school) {
 
-        String result = checkSchool(school);
+        String result = schoolService.checkSchool(school);
 
         User user = User.builder()
                 .autoID(autoID)
@@ -87,33 +85,6 @@ public class UserController {
     public CommonResult delete(@PathVariable long autoID) {
         userJpaRepo.deleteById(autoID);
         return responseService.getSuccessResult();
-    }
-
-    private String checkSchool(String school) {
-        String schoolSearch = schoolService.findByName(school);
-        if (schoolSearch == null) {
-            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-            return null;
-        }
-
-        boolean hasSchool = schoolSearch.contains(school);
-
-        if (!hasSchool) {
-            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-            return null;
-        }
-
-        JSONArray jsonArray;
-        try {
-            JSONObject jsonObject = new JSONObject(schoolSearch);
-            jsonArray = (JSONArray) jsonObject.get("schools");
-        } catch (JSONException e) {
-            e.printStackTrace();
-            responseService.getFailSingleResult("존재하지 않는 학교 입니다.");
-            return null;
-        }
-
-        return jsonArray.getJSONObject(0).get("name").toString();
     }
 
 }
