@@ -1,9 +1,12 @@
 package com.github.pdgs.MyPengAPI.suggestion.controller;
 
 import com.github.pdgs.MyPengAPI.suggestion.entity.Suggestion;
+import com.github.pdgs.MyPengAPI.suggestion.exception.SuggestionNotFoundException;
 import com.github.pdgs.MyPengAPI.suggestion.model.SuggestionInput;
 import com.github.pdgs.MyPengAPI.suggestion.repository.SuggestionRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -35,15 +38,28 @@ public class SuggestionController {
         return suggestion.orElse(null);
     }
 
+    @ExceptionHandler(SuggestionNotFoundException.class)
+    public ResponseEntity<String> handlerSuggestionNotFoundException(SuggestionNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @PutMapping("{suggestionId}")
     public void updateSuggestion(@PathVariable Long suggestionId, @RequestParam SuggestionInput suggestionInput) {
-        Optional<Suggestion> suggestion = suggestionRepo.findById(suggestionId);
-        if (suggestion.isPresent()) {
-            suggestion.get().setTitle(suggestionInput.getTitle());
-            suggestion.get().setContent(suggestionInput.getContent());
-            suggestion.get().setUpdateDate(LocalDateTime.now());
-            suggestionRepo.save(suggestion.get());
-        }
+        Suggestion suggestion = suggestionRepo.findById(suggestionId)
+                        .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
+
+        suggestion.setTitle(suggestionInput.getTitle());
+        suggestion.setContent(suggestionInput.getContent());
+        suggestion.setUpdateDate(LocalDateTime.now());
+        suggestionRepo.save(suggestion);
+    }
+
+    @PatchMapping("{suggestionId}/hits")
+    public void suggestionHits(@PathVariable Long suggestionId) {
+        Suggestion suggestion = suggestionRepo.findById(suggestionId)
+                .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
+        suggestion.setHits(suggestion.getHits() + 1);
+        suggestionRepo.save(suggestion);
     }
 
 }
