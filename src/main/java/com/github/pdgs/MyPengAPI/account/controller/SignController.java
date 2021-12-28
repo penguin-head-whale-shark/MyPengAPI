@@ -1,13 +1,13 @@
-package com.github.pdgs.MyPengAPI.controller;
+package com.github.pdgs.MyPengAPI.account.controller;
 
+import com.github.pdgs.MyPengAPI.account.entity.User;
+import com.github.pdgs.MyPengAPI.account.repository.UserJpaRepo;
+import com.github.pdgs.MyPengAPI.account.response.CommonResult;
+import com.github.pdgs.MyPengAPI.account.service.posts.ResponseService;
+import com.github.pdgs.MyPengAPI.account.service.posts.SchoolService;
 import com.github.pdgs.MyPengAPI.advice.exception.CEmailSignInFailedException;
 import com.github.pdgs.MyPengAPI.config.security.JwtTokenProvider;
-import com.github.pdgs.MyPengAPI.entity.User;
-import com.github.pdgs.MyPengAPI.repository.UserJpaRepo;
-import com.github.pdgs.MyPengAPI.response.CommonResult;
-import com.github.pdgs.MyPengAPI.response.SingleResult;
-import com.github.pdgs.MyPengAPI.service.posts.ResponseService;
-import com.github.pdgs.MyPengAPI.service.posts.SchoolService;
+import com.github.pdgs.MyPengAPI.account.response.SingleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

@@ -1,4 +1,4 @@
-package com.github.pdgs.MyPengAPI.entity;
+package com.github.pdgs.MyPengAPI.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

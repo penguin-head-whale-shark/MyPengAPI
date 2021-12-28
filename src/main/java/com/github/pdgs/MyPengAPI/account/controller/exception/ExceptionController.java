@@ -1,7 +1,7 @@
-package com.github.pdgs.MyPengAPI.controller.exception;
+package com.github.pdgs.MyPengAPI.account.controller.exception;
 
+import com.github.pdgs.MyPengAPI.account.response.CommonResult;
 import com.github.pdgs.MyPengAPI.advice.exception.CAuthenticationEntryPointException;
-import com.github.pdgs.MyPengAPI.response.CommonResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
-package com.github.pdgs.MyPengAPI.controller;
+package com.github.pdgs.MyPengAPI.account.controller;
 
-import com.github.pdgs.MyPengAPI.service.posts.SchoolService;
+import com.github.pdgs.MyPengAPI.account.service.posts.SchoolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

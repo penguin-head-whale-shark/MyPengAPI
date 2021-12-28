@@ -1,4 +1,4 @@
-package com.github.pdgs.MyPengAPI.response;
+package com.github.pdgs.MyPengAPI.account.response;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

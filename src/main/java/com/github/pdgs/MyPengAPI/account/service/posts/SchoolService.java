@@ -1,4 +1,4 @@
-package com.github.pdgs.MyPengAPI.service.posts;
+package com.github.pdgs.MyPengAPI.account.service.posts;
 
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;

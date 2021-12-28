@@ -1,8 +1,8 @@
-package com.github.pdgs.MyPengAPI.service.posts;
+package com.github.pdgs.MyPengAPI.account.service.posts;
 
-import com.github.pdgs.MyPengAPI.response.CommonResult;
-import com.github.pdgs.MyPengAPI.response.ListResult;
-import com.github.pdgs.MyPengAPI.response.SingleResult;
+import com.github.pdgs.MyPengAPI.account.response.CommonResult;
+import com.github.pdgs.MyPengAPI.account.response.ListResult;
+import com.github.pdgs.MyPengAPI.account.response.SingleResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

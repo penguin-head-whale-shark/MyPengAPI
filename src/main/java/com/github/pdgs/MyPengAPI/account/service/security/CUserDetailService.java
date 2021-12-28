@@ -1,7 +1,7 @@
-package com.github.pdgs.MyPengAPI.service.security;
+package com.github.pdgs.MyPengAPI.account.service.security;
 
+import com.github.pdgs.MyPengAPI.account.repository.UserJpaRepo;
 import com.github.pdgs.MyPengAPI.advice.exception.CUserNotFoundException;
-import com.github.pdgs.MyPengAPI.repository.UserJpaRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
