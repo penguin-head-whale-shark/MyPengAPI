@@ -1,6 +1,7 @@
 package com.github.pdgs.MyPengAPI.account.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.pdgs.MyPengAPI.suggestion.entity.Suggestion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

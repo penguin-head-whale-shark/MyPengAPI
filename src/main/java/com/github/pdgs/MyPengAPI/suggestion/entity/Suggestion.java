@@ -14,11 +14,15 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "suggestion")
 public class Suggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int suggestionId;
+
+    @Column(nullable = false, unique = true)
+    private Long writerId;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -43,5 +47,8 @@ public class Suggestion {
 
     @Column
     private LocalDateTime deleteDate;
+
+    @Column
+    private boolean adopted;
 
 }

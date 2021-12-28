@@ -11,7 +11,9 @@ import java.util.Optional;
 @Repository
 public interface SuggestionRepo extends JpaRepository<Suggestion, Long> {
 
-    Optional<List<Suggestion>> findByIdIn(List<Long> idList);
+    Optional<List<Suggestion>> findBySuggestionIdIn(List<Long> idList);
+
+    Optional<List<Suggestion>> findByWriterId(Long writerId);
 
     int countByTitleAndContentAndRegDateIsGreaterThanEqual(String title, String content, LocalDateTime regDate);
 

@@ -1,5 +1,8 @@
 package com.github.pdgs.MyPengAPI.suggestion.controller;
 
+import com.github.pdgs.MyPengAPI.account.entity.User;
+import com.github.pdgs.MyPengAPI.account.repository.UserJpaRepo;
+import com.github.pdgs.MyPengAPI.advice.exception.CEmailSignInFailedException;
 import com.github.pdgs.MyPengAPI.suggestion.entity.Suggestion;
 import com.github.pdgs.MyPengAPI.suggestion.exception.AlreadyDeletedException;
 import com.github.pdgs.MyPengAPI.suggestion.exception.DuplicateSuggestionException;
@@ -30,6 +33,7 @@ import java.util.Optional;
 public class SuggestionController {
 
     private final SuggestionRepo suggestionRepo;
+    private final UserJpaRepo userJpaRepo;
 
     @ExceptionHandler(DuplicateSuggestionException.class)
     public ResponseEntity<?> handlerDuplicateSuggestionException(DuplicateSuggestionException e) {
@@ -64,11 +68,29 @@ public class SuggestionController {
         suggestionRepo.save(Suggestion.builder()
                 .title(suggestionInput.getTitle())
                 .content(suggestionInput.getContent())
+                .writerId(suggestionInput.getWriterId())
                 .hits(0)
                 .likes(0)
                 .regDate(LocalDateTime.now())
+                .adopted(false)
                 .build());
 
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("adopt-suggestion/{suggestionId}")
+    public ResponseEntity<Object> adoptSuggestion(@PathVariable Long suggestionId,
+                                                  @RequestParam Long teacherId) {
+        Suggestion suggestion = suggestionRepo.findById(suggestionId)
+                .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
+        User user = userJpaRepo.findById(teacherId).orElseThrow(CEmailSignInFailedException::new);
+
+        if (!user.isTeacher()) {
+            return new ResponseEntity<>("선생님 계정만 접근 가능합니다.", HttpStatus.BAD_REQUEST);
+        }
+        
+        suggestion.setAdopted(true);
+        suggestionRepo.save(suggestion);
         return ResponseEntity.ok().build();
     }
 
@@ -76,6 +98,12 @@ public class SuggestionController {
     public Suggestion suggestion(@PathVariable Long suggestionId) {
         Optional<Suggestion> suggestion = suggestionRepo.findById(suggestionId);
         return suggestion.orElse(null);
+    }
+
+    @GetMapping("get/adopt-suggestions/{userId}")
+    public Page<Suggestion> getAdoptSuggestions(@PathVariable long userId) {
+        return suggestionsLatest(suggestionRepo.findByWriterId(userId)
+                .orElseThrow(() -> new SuggestionNotFoundException("채택된 건의사항이 없습니다.")).size());
     }
 
     @GetMapping("get/latest/{size}")
@@ -131,7 +159,7 @@ public class SuggestionController {
 
     @DeleteMapping("delete")
     public void deleteSuggestList(@RequestParam SuggestionDeleteInput suggestionDeleteInput) {
-        List<Suggestion> suggestions = suggestionRepo.findByIdIn(suggestionDeleteInput.getIdList())
+        List<Suggestion> suggestions = suggestionRepo.findBySuggestionIdIn(suggestionDeleteInput.getIdList())
                 .orElseThrow(() -> new SuggestionNotFoundException("건의사항 글이 존재하지 않습니다."));
 
         suggestions.forEach(e -> {
