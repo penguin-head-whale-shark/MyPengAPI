@@ -1,7 +1,7 @@
 package com.github.pdgs.MyPengAPI.controller;
 
 import com.github.pdgs.MyPengAPI.advice.exception.CUserNotFoundException;
-import com.github.pdgs.MyPengAPI.domain.posts.User;
+import com.github.pdgs.MyPengAPI.entity.User;
 import com.github.pdgs.MyPengAPI.repository.UserJpaRepo;
 import com.github.pdgs.MyPengAPI.response.CommonResult;
 import com.github.pdgs.MyPengAPI.response.ListResult;
