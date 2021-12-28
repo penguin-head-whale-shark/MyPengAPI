@@ -56,7 +56,7 @@ public class SignController {
         userJpaRepo.save(User.builder()
                 .name(name)
                 .id(id)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(password)) // 반드시 인코딩할 것
                 .isTeacher(isTeacher)
                 .school(result)
                 .roles(Collections.singletonList("ROLE_USER"))

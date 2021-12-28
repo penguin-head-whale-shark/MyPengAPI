@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private String id;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 1000)
     private String password;
 
     @Column(nullable = false, length = 20)
