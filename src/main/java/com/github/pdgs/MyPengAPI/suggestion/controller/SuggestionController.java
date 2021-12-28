@@ -5,6 +5,7 @@ import com.github.pdgs.MyPengAPI.suggestion.exception.AlreadyDeletedException;
 import com.github.pdgs.MyPengAPI.suggestion.exception.DuplicateSuggestionException;
 import com.github.pdgs.MyPengAPI.suggestion.exception.SuggestionNotFoundException;
 import com.github.pdgs.MyPengAPI.suggestion.model.ResponseError;
+import com.github.pdgs.MyPengAPI.suggestion.model.SuggestionDeleteInput;
 import com.github.pdgs.MyPengAPI.suggestion.model.SuggestionInput;
 import com.github.pdgs.MyPengAPI.suggestion.repository.SuggestionRepo;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,6 @@ public class SuggestionController {
         if (suggestionCount > 0) {
             throw new DuplicateSuggestionException("1분 이내에 동일한 내용의 건의사항이 등록되었습니다.");
         }
-        
 
         suggestionRepo.save(Suggestion.builder()
                 .title(suggestionInput.getTitle())
@@ -72,13 +72,13 @@ public class SuggestionController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("{suggestionId}")
+    @GetMapping("get/{suggestionId}")
     public Suggestion suggestion(@PathVariable Long suggestionId) {
         Optional<Suggestion> suggestion = suggestionRepo.findById(suggestionId);
         return suggestion.orElse(null);
     }
 
-    @GetMapping("latest/{size}")
+    @GetMapping("get/latest/{size}")
     public Page<Suggestion> suggestionsLatest(@PathVariable int size) {
         return suggestionRepo.findAll(
                 PageRequest.of(0, size, Sort.Direction.DESC, "regDate")
@@ -90,7 +90,7 @@ public class SuggestionController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("{suggestionId}")
+    @PutMapping("put/{suggestionId}")
     public void updateSuggestion(@PathVariable Long suggestionId, @RequestParam SuggestionInput suggestionInput) {
         Suggestion suggestion = suggestionRepo.findById(suggestionId)
                         .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
@@ -114,7 +114,7 @@ public class SuggestionController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
     }
 
-    @DeleteMapping("{suggestionId}")
+    @DeleteMapping("delete/{suggestionId}")
     public void deleteSuggestion(@PathVariable @Valid Long suggestionId) {
         Suggestion suggestion = suggestionRepo.findById(suggestionId)
                 .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
@@ -127,6 +127,35 @@ public class SuggestionController {
         suggestion.setDeleteDate(LocalDateTime.now());
 
         suggestionRepo.save(suggestion);
+    }
+
+    @DeleteMapping("delete")
+    public void deleteSuggestList(@RequestParam SuggestionDeleteInput suggestionDeleteInput) {
+        List<Suggestion> suggestions = suggestionRepo.findByIdIn(suggestionDeleteInput.getIdList())
+                .orElseThrow(() -> new SuggestionNotFoundException("건의사항 글이 존재하지 않습니다."));
+
+        suggestions.forEach(e -> {
+            e.setDeleted(true);
+            e.setDeleteDate(LocalDateTime.now());
+        });
+
+        suggestionRepo.saveAll(suggestions);
+    }
+
+    @DeleteMapping("delete/all")
+    public void deleteSuggestionAll() {
+        List<Suggestion> suggestions = suggestionRepo.findAll();
+
+        if (!suggestions.isEmpty()) {
+            suggestions.forEach(e -> {
+                if (!e.isDeleted()) {
+                    e.setDeleted(true);
+                    e.setDeleteDate(LocalDateTime.now());
+                }
+            });
+        }
+
+        suggestionRepo.saveAll(suggestions);
     }
 
 }
