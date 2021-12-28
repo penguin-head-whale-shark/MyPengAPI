@@ -12,10 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class CAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-       response.sendRedirect("/exception/entrypoint");
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
+            throws IOException, ServletException {
+        response.sendRedirect("/exception/entrypoint");
     }
 }

@@ -5,11 +5,10 @@ spring:
   messages:
     basename: i18n/exception
     encoding: UTF-8
-  jwt:
-    secret: HotJava4Drink
+  profiles:
+    include: jwt
 
 springdoc:
-  version: '1.0'
   api-docs:
     path: /api-docs
   default-consumes-media-type: application/json

@@ -55,7 +55,7 @@ public class UserController {
             required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "회원 수정", notes = "회원 정보를 수정한다.")
-    @PostMapping(value = "user")
+    @PutMapping(value = "user")
     public SingleResult<User> modify(@ApiParam(value = "회원번호", required = true) @RequestParam long autoID,
                                    @ApiParam(value = "회원ID: 이메일", required = true) @RequestParam String id,
                                    @ApiParam(value = "회원 비밀번호", required = true) @RequestParam String password,
@@ -82,7 +82,7 @@ public class UserController {
     })
     @ApiOperation(value = "회원 삭제", notes = "회원번호로 회원정보를 삭제한다.")
     @DeleteMapping(value = "user/{autoID}")
-    public CommonResult delete(@PathVariable long autoID) {
+    public CommonResult delete(@ApiParam(value = "회원 정보", required = true) @PathVariable long autoID) {
         userJpaRepo.deleteById(autoID);
         return responseService.getSuccessResult();
     }

@@ -26,29 +26,29 @@ public class ExceptionAdvice {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult defaultException(HttpServletRequest request, Exception e) {
-        return responseService.getFailResult(Integer.parseInt(getMessage("unknown.code")), getMessage("unknown.msg"));
+        return responseService.getFailResult(Integer.parseInt(getMessage("-9999")), getMessage("An unknown error has occurred. :("));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFoundException(HttpServletRequest request, CUserNotFoundException e) {
-        return responseService.getFailResult(Integer.parseInt(getMessage("userNotFound.code")), getMessage("userNotFound.msg"));
+        return responseService.getFailResult(Integer.parseInt(getMessage("-1000")), getMessage("This member not exist. :("));
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailSignInFailed(HttpServletRequest request, CEmailSignInFailedException e) {
-        return responseService.getFailResult(Integer.parseInt(getMessage("emailSignInFailed.code")), getMessage("emailSignInFailed.msg"));
+        return responseService.getFailResult(Integer.parseInt(getMessage("-1001")), getMessage("Your account does not exist or your email or password is incorrect. :("));
     }
 
     @ExceptionHandler(CAuthenticationEntryPointException.class)
     public CommonResult authenticationEntryPointException(HttpServletRequest request, CAuthenticationEntryPointException e) {
-        return responseService.getFailResult(Integer.parseInt(getMessage("entryPointException.code")), getMessage("entryPointException.msg"));
+        return responseService.getFailResult(Integer.parseInt(getMessage("-1002")), getMessage("You do not have permission to access this resource. :("));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public CommonResult AccessDeniedException(HttpServletRequest request, AccessDeniedException e) {
-        return responseService.getFailResult((Integer.parseInt(getMessage("accessDenied.code"))), getMessage("accessDenied.msg"));
+        return responseService.getFailResult((Integer.parseInt(getMessage("-1003"))), getMessage("A resource that can not be accessed with the privileges it has. :("));
     }
 
     // code 정보에 해당하는 메시지를 조회한다.

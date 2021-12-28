@@ -113,6 +113,14 @@ public class SuggestionController {
         );
     }
 
+    @GetMapping("search-suggestions/{keyword}")
+    public Page<Suggestion> searchSuggestionByKeyword(@PathVariable String keyword) {
+
+        return suggestionRepo.findAllByTitleIsContaining(keyword,
+                PageRequest.of(0, suggestionRepo.countByTitleContaining(keyword), Sort.Direction.DESC, "regDate")
+                );
+    }
+
     @ExceptionHandler(SuggestionNotFoundException.class)
     public ResponseEntity<String> handlerSuggestionNotFoundException(SuggestionNotFoundException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

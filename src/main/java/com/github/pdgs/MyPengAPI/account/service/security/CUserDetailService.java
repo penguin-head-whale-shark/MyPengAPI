@@ -16,6 +16,7 @@ public class CUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userJpaRepo.findById(Long.valueOf(username)).orElseThrow(CUserNotFoundException::new);
+        return userJpaRepo.findById(Long.parseLong(username))
+                .orElseThrow(CUserNotFoundException::new);
     }
 }

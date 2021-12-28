@@ -12,10 +12,11 @@ import java.io.IOException;
 
 @Slf4j
 @Component
-public class CAccessDeniedHandler implements AccessDeniedHandler {
+public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        response.sendRedirect("/exception/access-denied");
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException exception)
+            throws IOException, ServletException {
+        response.sendRedirect("/exception/accessdenied");
     }
 }

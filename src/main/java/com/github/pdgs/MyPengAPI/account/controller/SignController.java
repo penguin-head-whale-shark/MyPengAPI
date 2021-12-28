@@ -5,9 +5,9 @@ import com.github.pdgs.MyPengAPI.account.repository.UserJpaRepo;
 import com.github.pdgs.MyPengAPI.account.response.CommonResult;
 import com.github.pdgs.MyPengAPI.account.service.posts.ResponseService;
 import com.github.pdgs.MyPengAPI.account.service.posts.SchoolService;
+import com.github.pdgs.MyPengAPI.account.response.SingleResult;
 import com.github.pdgs.MyPengAPI.advice.exception.CEmailSignInFailedException;
 import com.github.pdgs.MyPengAPI.config.security.JwtTokenProvider;
-import com.github.pdgs.MyPengAPI.account.response.SingleResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,6 +33,7 @@ public class SignController {
     @PostMapping(value = "user/sign-in")
     public SingleResult<String> signIn(@ApiParam(value = "회원ID: 이메일", required = true) @RequestParam String id,
                                        @ApiParam(value = "비밀번호", required = true) @RequestParam String password) {
+
         User user = userJpaRepo.findById(id).orElseThrow(CEmailSignInFailedException::new);
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -55,7 +56,7 @@ public class SignController {
         userJpaRepo.save(User.builder()
                 .name(name)
                 .id(id)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .isTeacher(isTeacher)
                 .school(result)
                 .roles(Collections.singletonList("ROLE_USER"))
