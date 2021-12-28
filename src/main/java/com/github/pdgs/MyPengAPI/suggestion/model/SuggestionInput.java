@@ -1,22 +1,17 @@
 package com.github.pdgs.MyPengAPI.suggestion.model;
 
+import com.github.pdgs.MyPengAPI.account.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SuggestionModel {
-
-    private int suggestionId;
+public class SuggestionInput {
 
     private String title;
-
     private String content;
-
-    private LocalDateTime regDate;
-
 }

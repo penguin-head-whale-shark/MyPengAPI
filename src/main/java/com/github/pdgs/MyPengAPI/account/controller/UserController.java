@@ -32,7 +32,7 @@ public class UserController {
             required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "회원 리스트 조회", notes = "모든 회원을 조회한다.")
-    @GetMapping(value = "/users")
+    @GetMapping(value = "users")
     public ListResult<User> findAllUser() {
         return responseService.getListResult(userJpaRepo.findAll());
     }
@@ -43,7 +43,7 @@ public class UserController {
             required = false, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "회원 단건 조회", notes = "회원번호(autoID)로 회원을 조회한다.")
-    @GetMapping(value = "/user")
+    @GetMapping(value = "user")
     public SingleResult<User> findUserByAutoId(@ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String id = authentication.getName();
@@ -55,7 +55,7 @@ public class UserController {
             required = true, dataType = "String", paramType = "header")
     })
     @ApiOperation(value = "회원 수정", notes = "회원 정보를 수정한다.")
-    @PostMapping(value = "/user")
+    @PostMapping(value = "user")
     public SingleResult<User> modify(@ApiParam(value = "회원번호", required = true) @RequestParam long autoID,
                                    @ApiParam(value = "회원ID: 이메일", required = true) @RequestParam String id,
                                    @ApiParam(value = "회원 비밀번호", required = true) @RequestParam String password,

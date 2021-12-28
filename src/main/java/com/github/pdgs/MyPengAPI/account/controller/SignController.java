@@ -20,7 +20,7 @@ import java.util.Collections;
 @Api(tags = {"1. Sign"})
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1")
+@RequestMapping(value = "api/v1/")
 public class SignController {
 
     private final UserJpaRepo userJpaRepo;
