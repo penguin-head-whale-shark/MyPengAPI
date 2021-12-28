@@ -38,4 +38,10 @@ public class Suggestion {
     @Column
     private int likes;
 
+    @Column
+    private boolean deleted;
+
+    @Column
+    private LocalDateTime deleteDate;
+
 }
