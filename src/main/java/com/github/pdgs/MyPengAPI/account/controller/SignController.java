@@ -51,6 +51,12 @@ public class SignController {
                                @ApiParam(value = "계정의 선생님 여부: true / false", required = true) @RequestParam boolean isTeacher,
                                @ApiParam(value = "학교", required = true) @RequestParam(required = false, defaultValue = "대구소프트웨어고등학교") String school) {
 
+        System.out.println(userJpaRepo.findById(id));
+
+        if (userJpaRepo.findById(id).isPresent()) {
+            return responseService.getFailResult(-1005, "이미 존재하는 이메일입니다.");
+        }
+
         String result = schoolService.checkSchool(school);
 
         if (result == null) {
