@@ -21,8 +21,8 @@ public class Suggestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long suggestionId;
 
-    @Column(nullable = false, unique = true)
-    private Long writerId;
+    @Column(nullable = false, length = 100)
+    private String writerId;
 
     @Column(nullable = false, length = 100)
     private String title;
@@ -33,7 +33,7 @@ public class Suggestion {
     @Column(nullable = false)
     private LocalDateTime regDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime updateDate;
 
     @Column

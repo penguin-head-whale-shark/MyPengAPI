@@ -49,9 +49,13 @@ public class SignController {
                                @ApiParam(value = "비밀번호", required = true) @RequestParam String password,
                                @ApiParam(value = "이름", required = true) @RequestParam String name,
                                @ApiParam(value = "계정의 선생님 여부: true / false", required = true) @RequestParam boolean isTeacher,
-                               @ApiParam(value = "학교", required = true) @RequestParam String school) {
+                               @ApiParam(value = "학교", required = true) @RequestParam(required = false, defaultValue = "대구소프트웨어고등학교") String school) {
 
         String result = schoolService.checkSchool(school);
+
+        if (result == null) {
+            return responseService.getFailResult(-1004, "없는 학교가 전달되었습니다.");
+        }
 
         userJpaRepo.save(User.builder()
                 .name(name)
