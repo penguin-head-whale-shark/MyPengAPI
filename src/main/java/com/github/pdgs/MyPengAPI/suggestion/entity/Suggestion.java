@@ -19,7 +19,7 @@ public class Suggestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int suggestionId;
+    private Long suggestionId;
 
     @Column(nullable = false, unique = true)
     private Long writerId;

@@ -2,6 +2,8 @@ package com.github.pdgs.MyPengAPI.suggestion.controller;
 
 import com.github.pdgs.MyPengAPI.account.entity.User;
 import com.github.pdgs.MyPengAPI.account.repository.UserJpaRepo;
+import com.github.pdgs.MyPengAPI.account.response.CommonResult;
+import com.github.pdgs.MyPengAPI.account.service.posts.ResponseService;
 import com.github.pdgs.MyPengAPI.advice.exception.CEmailSignInFailedException;
 import com.github.pdgs.MyPengAPI.suggestion.entity.Suggestion;
 import com.github.pdgs.MyPengAPI.suggestion.exception.AlreadyDeletedException;
@@ -34,6 +36,7 @@ public class SuggestionController {
 
     private final SuggestionRepo suggestionRepo;
     private final UserJpaRepo userJpaRepo;
+    private final ResponseService responseService;
 
     @ExceptionHandler(DuplicateSuggestionException.class)
     public ResponseEntity<?> handlerDuplicateSuggestionException(DuplicateSuggestionException e) {
@@ -41,8 +44,8 @@ public class SuggestionController {
     }
 
     @PostMapping("add-suggestion")
-    public ResponseEntity<Object> addSuggestion(@RequestParam SuggestionInput suggestionInput,
-                                                Errors errors) {
+    public CommonResult addSuggestion(@RequestParam SuggestionInput suggestionInput,
+                                      Errors errors) {
         if (errors.hasErrors()) {
 
             List<ResponseError> responseErrors = new ArrayList<>();
@@ -51,7 +54,7 @@ public class SuggestionController {
                 responseErrors.add(ResponseError.of((FieldError) e));
             });
 
-            return new ResponseEntity<>(responseErrors, HttpStatus.BAD_REQUEST);
+            return responseService.getFailResult(responseErrors.size(), HttpStatus.BAD_REQUEST.getReasonPhrase());
         }
 
         LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
@@ -75,23 +78,23 @@ public class SuggestionController {
                 .adopted(false)
                 .build());
 
-        return ResponseEntity.ok().build();
+        return responseService.getSuccessResult();
     }
 
     @PostMapping("adopt-suggestion/{suggestionId}")
-    public ResponseEntity<Object> adoptSuggestion(@PathVariable Long suggestionId,
+    public CommonResult adoptSuggestion(@PathVariable Long suggestionId,
                                                   @RequestParam Long teacherId) {
         Suggestion suggestion = suggestionRepo.findById(suggestionId)
                 .orElseThrow(() -> new SuggestionNotFoundException("건의사항에 글이 존재하지 않습니다."));
         User user = userJpaRepo.findById(teacherId).orElseThrow(CEmailSignInFailedException::new);
 
         if (!user.isTeacher()) {
-            return new ResponseEntity<>("선생님 계정만 접근 가능합니다.", HttpStatus.BAD_REQUEST);
+            return responseService.getFailResult(HttpStatus.BAD_REQUEST.value(), "선생님 계정만 접근 가능합니다.");
         }
         
         suggestion.setAdopted(true);
         suggestionRepo.save(suggestion);
-        return ResponseEntity.ok().build();
+        return responseService.getSuccessResult();
     }
 
     @GetMapping("get/{suggestionId}")
